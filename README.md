@@ -21,7 +21,7 @@ Requires iOS 16.0 or later
 ## Preview
 
 ### Onboarding Screen
-This is a main screen where the user can search for information <br>
+This is a main screen where the user can search information <br>
 <div>
   <img src="./ScreenShots/1.png" width=235,75 height=450>
   <img src="./ScreenShots/2.png" width=235,75 height=450>
