@@ -29,11 +29,12 @@ class ResultsView: UIView {
         mainView.translateMask()
         textView.translateMask()
         
-        mainView.backgroundColor = .white
+        mainView.backgroundColor = CustomColors.colorVanilla
         
         textView.isEditable = false
-        textView.textColor = .black
-        textView.font = .systemFont(ofSize: 16)
+        textView.backgroundColor = CustomColors.colorVanilla
+        textView.textColor = CustomColors.colorBlack
+        textView.font = UIFont(name: CustomFonts.sourceSansProRegular, size: 16)
         
         NSLayoutConstraint.activate([
             mainView.topAnchor.constraint(equalTo: self.topAnchor),

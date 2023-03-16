@@ -31,11 +31,14 @@ class SearchView: UIView {
         
         // SearchTextField
         searchTextField.attributedPlaceholder = NSAttributedString(
-            string: "Type something ..."
+            string: "Type something ...",
+            attributes: [NSAttributedString.Key.foregroundColor: CustomColors.colorBlack ?? UIColor.gray,
+                         NSAttributedString.Key.font: UIFont(name: CustomFonts.sourceSansProRegular, size: 17) ?? UIFont.systemFont(ofSize: 17)
+                        ]
         )
         searchTextField.textAlignment = .left
-        searchTextField.textColor = .black
-        searchTextField.backgroundColor = .white
+        searchTextField.textColor = CustomColors.colorBlack
+        searchTextField.backgroundColor = CustomColors.colorBlue
         searchTextField.layer.cornerRadius = 15
         
         // PlaceHolder Image
@@ -43,7 +46,7 @@ class SearchView: UIView {
         searchTextField.leftView = leftVeiwView
         searchTextField.leftViewMode = .always
         let iconImage = UIImageView(frame: CGRect(x: 10, y:10, width: 22, height: 20))
-        iconImage.tintColor = .black
+        iconImage.tintColor = CustomColors.colorBlack
         iconImage.image = UIImage(systemName: "magnifyingglass")
         leftVeiwView.addSubview(iconImage)
         

@@ -25,7 +25,7 @@ class HistoryCollectionView: UIView {
     private func setupUI() {
         self.addSubview(collectionView)
         collectionView.translateMask()
-        collectionView.backgroundColor = .clear
+        collectionView.backgroundColor = CustomColors.colorVanilla
         collectionView.isScrollEnabled = false
         
         NSLayoutConstraint.activate([
@@ -47,10 +47,10 @@ class HistoryCollectionView: UIView {
             let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
             
-            item.contentInsets = .init(top: 0, leading: 0, bottom: 30, trailing: 0)
+            item.contentInsets = .init(top: 0, leading: 0, bottom: 50, trailing: 0)
             
             let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(self.collectionView.frame.height))
-            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 1)
+            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 1)
             group.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
             
             let section = NSCollectionLayoutSection(group: group)
@@ -97,17 +97,17 @@ class CustomHistoryCollectionCell: UICollectionViewCell {
         mainView.translateMask()
         userQuestionTextView.translateMask()
         openAIResponseTextView.translateMask()
-        
-        mainView.backgroundColor = .white
-        
+                
         userQuestionTextView.textAlignment = .left
         userQuestionTextView.textColor = .black
-        userQuestionTextView.font = .systemFont(ofSize: 20, weight: .heavy)
+        userQuestionTextView.backgroundColor = CustomColors.colorVanilla
+        userQuestionTextView.font = UIFont(name: CustomFonts.sourceSansProSemiBold, size: 20)
 //        userQuestionTextView.isEditable = false
         
         openAIResponseTextView.textAlignment = .left
         openAIResponseTextView.textColor = .black
-        openAIResponseTextView.font = .systemFont(ofSize: 16, weight: .regular)
+        openAIResponseTextView.backgroundColor = CustomColors.colorVanilla
+        openAIResponseTextView.font = UIFont(name: CustomFonts.sourceSansProRegular, size: 16)
         openAIResponseTextView.isEditable = false
         
         NSLayoutConstraint.activate([

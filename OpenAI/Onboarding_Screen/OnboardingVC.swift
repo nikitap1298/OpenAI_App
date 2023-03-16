@@ -18,6 +18,12 @@ class OnboardingVC: UIViewController {
     private let tapGestureRecognizer = UITapGestureRecognizer()
      
     // Views
+    private var mainView: UIView = {
+        let mainView = UIView()
+        mainView.translateMask()
+        mainView.backgroundColor = CustomColors.colorVanilla
+        return mainView
+    }()
     private let activityView = UIActivityIndicatorView(style: .medium)
     private var resultsView = ResultsView()
     private var searchView = SearchView()
@@ -25,6 +31,7 @@ class OnboardingVC: UIViewController {
     
     private let keyboardOffSetValue: CGFloat = 20
     
+    private var userQuestion: String = ""
     private var openAIResponse: String = ""
     
     // Realm
@@ -35,7 +42,7 @@ class OnboardingVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = UIColor(named: "Color_Green")
+        view.backgroundColor = CustomColors.colorBlue
         customNavigationBar()
         
         // Close the keyboard after user tap any view
@@ -45,6 +52,7 @@ class OnboardingVC: UIViewController {
         
         checkOpenAIAccessibility()
         
+        setupMainView()
         setupSearchView()
         setupResultsView()
         
@@ -78,29 +86,41 @@ class OnboardingVC: UIViewController {
         }
     }
     
-    // ResultsView
-    private func setupResultsView() {
-        view.addSubview(resultsView.mainView)
+    // MainView
+    private func setupMainView() {
+        view.addSubview(mainView)
         
         NSLayoutConstraint.activate([
-            resultsView.mainView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            resultsView.mainView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            resultsView.mainView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            mainView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            mainView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            mainView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            mainView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
+    
+    // ResultsView
+    private func setupResultsView() {
+        mainView.addSubview(resultsView.mainView)
+        
+        NSLayoutConstraint.activate([
+            resultsView.mainView.topAnchor.constraint(equalTo: mainView.topAnchor),
+            resultsView.mainView.leadingAnchor.constraint(equalTo: mainView.leadingAnchor),
+            resultsView.mainView.trailingAnchor.constraint(equalTo: mainView.trailingAnchor),
             resultsView.mainView.bottomAnchor.constraint(equalTo: searchView.mainView.topAnchor, constant: -25)
         ])
     }
     
     // SearchView
     private func setupSearchView() {
-        view.addSubview(searchView.mainView)
+        mainView.addSubview(searchView.mainView)
         
         searchView.searchTextField.delegate = self
         
         searchViewBottomAnchor = searchView.mainView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -keyboardOffSetValue)
         
         NSLayoutConstraint.activate([
-            searchView.mainView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
-            searchView.mainView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
+            searchView.mainView.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: 10),
+            searchView.mainView.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -10),
             searchView.mainView.heightAnchor.constraint(equalToConstant: 45),
         ])
         
@@ -136,8 +156,9 @@ class OnboardingVC: UIViewController {
 
     // Activity indicator which appears during loading OpenAI data
     private func showActivityIndicator() {
-        activityView.center = self.view.center
-        self.view.addSubview(activityView)
+        view.addSubview(activityView)
+        activityView.center = view.center
+        activityView.color = CustomColors.colorBlack
         activityView.startAnimating()
     }
 }
@@ -153,7 +174,12 @@ extension OnboardingVC: UITextFieldDelegate {
         // Activity indicator appears after press "enter"
         showActivityIndicator()
         
-        openAI.sendCompletion(with: textField.text ?? "", maxTokens: 3000) { [weak self] results in
+        userQuestion = textField.text ?? ""
+        
+        // Delete search text
+        textField.text = ""
+        
+        openAI.sendCompletion(with: userQuestion, maxTokens: 3000) { [weak self] results in
             switch results {
             case .success(let success):
                 self?.openAIResponse = success.choices.first?.text ?? ""
@@ -164,7 +190,7 @@ extension OnboardingVC: UITextFieldDelegate {
                     self?.resultsView.textView.text = self?.openAIResponse
                     
                     // Create Realm Object
-                    let historyElement = History(userQuestion: textField.text, openAIResponse: self?.openAIResponse)
+                    let historyElement = History(userQuestion: self?.userQuestion, openAIResponse: self?.openAIResponse)
                     
                     do {
                         try self?.realm.write {
@@ -173,11 +199,7 @@ extension OnboardingVC: UITextFieldDelegate {
                     } catch {
                         print(error.localizedDescription)
                     }
-                    
-                    // Delete search text
-                    textField.text = ""
                 }
-                print(self?.openAIResponse ?? "")
             case .failure(let failure):
                 DispatchQueue.main.async { [weak self] in
                     self?.resultsView.textView.text = failure.localizedDescription
@@ -197,8 +219,8 @@ extension OnboardingVC {
         appearance.backgroundColor = .clear
         navigationItem.title = "OpenAI"
         appearance.titleTextAttributes = [
-            .foregroundColor: UIColor.white as Any,
-            .font: UIFont.systemFont(ofSize: 24)
+            .foregroundColor: CustomColors.colorVanilla as Any,
+            .font: UIFont(name: CustomFonts.robotoBold, size: 24) ?? UIFont.systemFont(ofSize: 24)
         ]
         
         // Setup NavigationBar and remove bottom border
@@ -212,7 +234,7 @@ extension OnboardingVC {
         // Custom Right Button
         let historyButton = UIButton()
         historyButton.setImage(UIImage(systemName: "book"), for: .normal)
-        historyButton.tintColor = .white
+        historyButton.tintColor = CustomColors.colorVanilla
         
         let rightButton = UIBarButtonItem(customView: historyButton)
         navigationItem.rightBarButtonItem = rightButton

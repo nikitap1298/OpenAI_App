@@ -21,7 +21,7 @@ class HistoryVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = UIColor(named: "Color_Green")
+        view.backgroundColor = CustomColors.colorBlue
         customNavigationBar()
         
         setupHistoryCollectionView()
@@ -64,7 +64,7 @@ class HistoryVC: UIViewController {
             historyCollectionView.collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             historyCollectionView.collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             historyCollectionView.collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            historyCollectionView.collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            historyCollectionView.collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
 }
@@ -94,8 +94,8 @@ private extension HistoryVC {
         appearance.backgroundColor = .clear
         navigationItem.title = "History"
         appearance.titleTextAttributes = [
-            .foregroundColor: UIColor.white,
-            .font: UIFont.systemFont(ofSize: 24)
+            .foregroundColor: CustomColors.colorVanilla as Any,
+            .font: UIFont(name: CustomFonts.robotoBold, size: 24) ?? UIFont.systemFont(ofSize: 24)
         ]
         
         // Setup NavigationBar and remove bottom border
@@ -107,7 +107,7 @@ private extension HistoryVC {
         // Custom Left Button
         let backButton = UIButton()
         backButton.setImage(UIImage(systemName: "arrowshape.backward"), for: .normal)
-        backButton.tintColor = .white
+        backButton.tintColor = CustomColors.colorVanilla
         
         let leftButton = UIBarButtonItem(customView: backButton)
         navigationItem.leftBarButtonItem = leftButton
@@ -116,7 +116,7 @@ private extension HistoryVC {
         // Custom Right Button
         let deleteButton = UIButton()
         deleteButton.setImage(UIImage(systemName: "trash"), for: .normal)
-        deleteButton.tintColor = .red
+        deleteButton.tintColor = CustomColors.colorRed
         
         if history.isEmpty {
             deleteButton.isHidden = true
